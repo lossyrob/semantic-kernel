@@ -150,6 +150,7 @@ class PostgresCollection(VectorStoreRecordCollection[TKey, TModel]):
                 conn.transaction(),
                 conn.cursor() as cur,
             ):
+                await cur.execute("SET application_name = 'semantic-kernel'")
                 # Split the records into batches
                 max_rows_per_transaction = self._settings.max_rows_per_transaction
                 for i in range(0, len(records), max_rows_per_transaction):
@@ -200,6 +201,7 @@ class PostgresCollection(VectorStoreRecordCollection[TKey, TModel]):
         fields = [(field.name, field) for field in self.data_model_definition.fields.values()]
         try:
             async with self.connection_pool.connection() as conn, conn.cursor() as cur:
+                await cur.execute("SET application_name = 'semantic-kernel'")
                 await cur.execute(
                     sql.SQL("SELECT {} FROM {}.{} WHERE {} IN ({})").format(
                         sql.SQL(", ").join(sql.Identifier(name) for (name, _) in fields),

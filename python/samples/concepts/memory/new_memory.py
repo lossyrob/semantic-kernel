@@ -12,6 +12,9 @@ from semantic_kernel import Kernel
 from semantic_kernel.connectors.ai.open_ai import OpenAIEmbeddingPromptExecutionSettings, OpenAITextEmbedding
 from semantic_kernel.connectors.ai.open_ai.services.azure_text_embedding import AzureTextEmbedding
 from semantic_kernel.connectors.memory.azure_ai_search import AzureAISearchCollection
+from semantic_kernel.connectors.memory.azure_db_for_postgres.azure_db_for_postgres_collection import (
+    AzureDBForPostgresCollection,
+)
 from semantic_kernel.connectors.memory.postgres.postgres_collection import PostgresCollection
 from semantic_kernel.connectors.memory.qdrant import QdrantCollection
 from semantic_kernel.connectors.memory.redis import RedisHashsetCollection, RedisJsonCollection
@@ -88,6 +91,10 @@ stores: dict[str, Callable[[], VectorStoreRecordCollection]] = {
     "ai_search": lambda: AzureAISearchCollection[MyDataModel](
         data_model_type=MyDataModel,
     ),
+    "azure_db_for_postgres": lambda: AzureDBForPostgresCollection[str, MyDataModel](
+        data_model_type=MyDataModel,
+        collection_name=collection_name,
+    ),
     "postgres": lambda: PostgresCollection[str, MyDataModel](
         data_model_type=MyDataModel,
         collection_name=collection_name,
@@ -140,6 +147,10 @@ async def main(store: str, use_azure_openai: bool, embedding_model: str):
                     print(f"{result.vector[:5]=}")
         else:
             print("not found")
+
+        # press any key to continue
+        print("Press any key to continue...")
+        input()
 
 
 if __name__ == "__main__":

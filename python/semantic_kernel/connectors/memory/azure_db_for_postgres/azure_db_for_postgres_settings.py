@@ -39,5 +39,8 @@ class AzureDBForPostgresSettings(PostgresSettings):
                 password = get_entra_token_aysnc(self.credential)
             else:
                 password = get_entra_token(self.credential)
+        # Could use options = "-c application_name=SemanticKernel-AzureDBForPostgresConnector"
 
-        return super().get_connection_args(password=password)
+        return super().get_connection_args(
+            password=password, application_name="SemanticKernel.AzureDBForPostgresConnector"
+        )
